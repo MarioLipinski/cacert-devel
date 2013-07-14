@@ -38,7 +38,7 @@
 	$id = 0; if(array_key_exists("id",$_REQUEST)) $id=intval($_REQUEST['id']);
 	$oldid = 0; if(array_key_exists("oldid",$_REQUEST)) $oldid=intval($_REQUEST['oldid']);
 
-	$_SESSION['_config']['filepath'] = "/www";
+	$_SESSION['_config']['filepath'] = realpath(dirname(__FILE__) . '/../');
 
 	require_once($_SESSION['_config']['filepath']."/includes/mysql.php");
 	require_once($_SESSION['_config']['filepath'].'/includes/lib/account.php');
@@ -506,18 +506,21 @@
 		return(0);
 	}
 
-	function hex2bin($data)
-	{
-		while(strstr($data, "\\x"))
-		{
-			$pos = strlen($data) - strlen(strstr($data, "\\x"));
-			$before = substr($data, 0, $pos);
-			$char = chr(hexdec(substr($data, $pos + 2, 2)));
-			$after = substr($data, $pos + 4);
-			$data = $before.$char.$after;
-		}
-		return(utf8_decode($data));
-	}
+    // FIXME
+    if (version_compare(PHP_VERSION, '5.4.0', '<')) {
+        function hex2bin($data)
+        {
+            while(strstr($data, "\\x"))
+            {
+                $pos = strlen($data) - strlen(strstr($data, "\\x"));
+                $before = substr($data, 0, $pos);
+                $char = chr(hexdec(substr($data, $pos + 2, 2)));
+                $after = substr($data, $pos + 4);
+                $data = $before.$char.$after;
+            }
+            return(utf8_decode($data));
+        }
+    }
 
 	function signmail($to, $subject, $message, $from, $replyto = "")
 	{

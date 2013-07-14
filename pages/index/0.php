@@ -43,7 +43,7 @@
 */
 	$rss = "";
 	$open = $items = 0;
-	$fp = @fopen("/www/pages/index/feed.rss", "r");
+	$fp = fopen($_SESSION['_config']['filepath'] . '/pages/index/feed.rss', "r");
 	if($fp)
 	{
 		echo '<p id="lnews">'._('Latest News').'</p>';
